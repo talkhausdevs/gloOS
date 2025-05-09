@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gloOS Lock Screen</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+    .glow {
+      text-shadow: 0 0 8px #fff, 0 0 16px #a78bfa;
+    }
+    .unlock-btn:hover {
+      box-shadow: 0 0 12px 2px rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+  <div id="lockscreen" class="text-center text-white">
+    <div class="text-5xl font-bold glow" id="time">--:--</div>
+    <div class="text-lg mt-2 text-gray-300">Thursday, May 9</div>
+    <button onclick="unlock()" class="mt-10 px-6 py-3 bg-white bg-opacity-10 rounded-full unlock-btn text-white hover:bg-opacity-20 transition-all">Tap & Hold to Unlock</button>
+  </div>
+
+  <div id="homescreen" class="hidden text-center text-white">
+    <h1 class="text-3xl glow">Welcome to gloOS ✨</h1>
+    <p class="mt-2 text-gray-300">Home screen goes here... more widgets and apps coming soon!</p>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      let h = now.getHours().toString().padStart(2, '0');
+      let m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('time').textContent = `${h}:${m}`;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function unlock() {
+      document.getElementById('lockscreen').classList.add('hidden');
+      document.getElementById('homescreen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
