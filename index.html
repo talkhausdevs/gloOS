@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gloOS Lock Screen</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <style>
+<style>
     body {
       background: linear-gradient(135deg, #1f1c2c, #928dab);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,35 +10,48 @@
     .unlock-btn:hover {
       box-shadow: 0 0 12px 2px rgba(255,255,255,0.4);
     }
-  </style>
-</head>
-<body class="flex items-center justify-center h-screen">
-  <div id="lockscreen" class="text-center text-white">
-    <div class="text-5xl font-bold glow" id="time">--:--</div>
-    <div class="text-lg mt-2 text-gray-300">Thursday, May 9</div>
-    <button onclick="unlock()" class="mt-10 px-6 py-3 bg-white bg-opacity-10 rounded-full unlock-btn text-white hover:bg-opacity-20 transition-all">Tap & Hold to Unlock</button>
-  </div>
-
-  <div id="homescreen" class="hidden text-center text-white">
-    <h1 class="text-3xl glow">Welcome to gloOS ✨</h1>
-    <p class="mt-2 text-gray-300">Home screen goes here... more widgets and apps coming soon!</p>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      let h = now.getHours().toString().padStart(2, '0');
-      let m = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById('time').textContent = `${h}:${m}`;
+    .dynamic-island {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 9999px;
+      padding: 0.5rem 1.5rem;
+      margin: 1rem auto;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      animation: pulse 2s infinite;
     }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    function unlock() {
-      document.getElementById('lockscreen').classList.add('hidden');
-      document.getElementById('homescreen').classList.remove('hidden');
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; }
     }
-  </script>
-</body>
-</html>
+    .listening {
+      box-shadow: 0 0 20px 8px rgba(167, 139, 250, 0.7);
+      transition: all 0.3s ease-in-out;
+    }
+</style>
+
+<!-- inside mic-btn click handler -->
+          document.getElementById('mic-btn').addEventListener('click', () => {
+            beep.play();
+            const mic = document.getElementById('mic-btn');
+            mic.classList.add('listening');
+            recognition.start();
+            console.log("Voice recognition started");
+          });
+
+          recognition.onend = function () {
+            const mic = document.getElementById('mic-btn');
+            mic.classList.remove('listening');
+          };
+
+          recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            const input = document.getElementById('user-input');
+            input.value = transcript;
+            sendMessage();
+          };
+
+          recognition.onerror = function(event) {
+            console.warn('Voice recognition error:', event.error);
+            const mic = document.getElementById('mic-btn');
+            mic.classList.remove('listening');
+          };
